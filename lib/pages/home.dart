@@ -1,103 +1,89 @@
-import 'package:proyecto/pages/Consultar.dart';
-import 'package:proyecto/pages/Registrar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class home extends StatefulWidget {
+
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+  
+
+ 
+
+  final String title;
+
   @override
-  State<home> createState() => homeState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class homeState extends State<home> {
-  int ItemDrawer = 0;
+class _MyHomePageState extends State<MyHomePage> {
 
-  _getDrawerItem(int position) {
-    switch (position) {
-      case 0:
-        return Registro();
-      case 1:
-         return Consulta();
+void getEstudiantes()async{
+  CollectionReference collectionReference =
+  FirebaseFirestore.instance.collection("tbestudiantes");
+  QuerySnapshot mensaje = await collectionReference.get();
+  if(mensaje.docs.length !=0){
+    for (var doc in mensaje.docs){
+      print(doc.data());
     }
   }
+}
 
-  void _onSelectItemDrawer(int pos) {
-    Navigator.pop(context);
-    setState(() {
-      ItemDrawer = pos;
-    });
+Future<List> getMensajes () async {
+  List chats = [];
+  CollectionReference collectionReference =
+  FirebaseFirestore.instance.collection("tbestudiantes");
+  QuerySnapshot mensaje = await collectionReference.get();
+  if(mensaje.docs.length !=0){
+    for (var doc in mensaje.docs){
+      print((doc.data()));
+      chats.add(doc.data());
+    }
   }
+  return chats;
+}
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      appBar: AppBar( 
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,  
+        title: Text(widget.title),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 0, 217, 255),
-              ),
-              child: Center(
-                child: Text(
-                  'MENÚ',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-            ),
-            Divider(color: Colors.black),
-            ListTile(
-                leading: Image.asset(
-                  'img/registrarse.png',
-                  width: 25,
-                  height: 25,
-                ),
-                title: Text('Registrar usuario'),
-                onTap: () {
-                  _onSelectItemDrawer(0);
-                }),
-            ListTile(
-                leading: Image.asset(
-                  'img/consultar.png',
-                  width: 25,
-                  height: 25,
-                ),
-                title: Text('Consultar usuario'),
-                onTap: () {
-                  _onSelectItemDrawer(1);
-                }),
-            Divider(color: Colors.black),
-            ElevatedButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.pushNamed(context, "/login");
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.lightBlue, // Color de fondo del botón
-                onPrimary: Colors.white, // Color del texto del botón
-              ),
-              child: Row(
-                children: [
-                  Image.asset(
-                    'img/cerrar.png',
-                    width: 25,
-                    height: 25,
-                  ),
-                  SizedBox(width: 10), // Espacio entre la imagen y el texto
-                  Text('Cerrar sesión'),
-                ],
-              ),
-            )
-          ],
-        ),
+
+      body:FutureBuilder(
+        future: getMensajes(),
+        builder: ((context, snapshot){
+          if (snapshot.hasData){
+            return ListView.builder(
+              itemCount: snapshot.data?.length,
+              itemBuilder:((context,index){
+                return Text(snapshot.data?[index]["nombre"]+ "_" + snapshot.data?[index]["apellido"]);
+              }),
+            );
+          }else{
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        }),
       ),
-      body: _getDrawerItem(ItemDrawer),
+      floatingActionButton: FloatingActionButton(
+        onPressed: getEstudiantes,
+        tooltip: 'Increment',
+        child:  const Icon(Icons.add),
+    ),
     );
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getEstudiantes();
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    
   }
 }
