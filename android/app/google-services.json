@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "646658086656",
-    "project_id": "proyecto-c7edd",
-    "storage_bucket": "proyecto-c7edd.appspot.com"
+    "project_number": "300374215771",
+    "project_id": "mariamajo-46470",
+    "storage_bucket": "mariamajo-46470.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:646658086656:android:e365dcfae56b98652e85e5",
+        "mobilesdk_app_id": "1:300374215771:android:df1fd8c501a53c8b02437e",
         "android_client_info": {
           "package_name": "com.Maria.proyecto"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCBX5GKEgtTCD0bl1wdNqkv_MQsDoeJGsM"
+          "current_key": "AIzaSyDZgtdy2WMl7g_OhtDAS4_wntbCT6g-S6E"
         }
       ],
       "services": {
